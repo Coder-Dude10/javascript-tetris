@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+</head>
+<body onload="start();">
+    <canvas width="640" height="480" id="canvas"></canvas>
+    <script>
+        var clock = 0;
+        var tileSpeed = 1;
+        var tileMove = "none";
+        var tileRotate = "false";
+        var tilesColor = "https://i.ibb.co/Db7XpDn/red-tile.png";
+        var tiles = [];
+        var tilesX = [];
+        var tilesY = [];
+        var tilesColors = [];
+        var randomInt = 0;
+        
+        var background = new Image();
+        background.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Black_colour.jpg/640px-Black_colour.jpg";
+        
+        var tile = new Image();
+        tile.src = "https://i.ibb.co/Db7XpDn/red-tile.png";
+
+        var brick1X = 150, brick2X = 320, brick3X = 450;
+        var brickW = 100, brickH = 50;
+        var platformX = 250, platformY = 320;
+        var platformW = 150, platformH = 30;
+        var tileX = 320, tileY = 50;
+        var tile1X = -25, tile1Y = -25;
+        var tile2X = 0, tile2Y = -25;
+        var tile3X = 0, tile3Y = 0;
+        var tile4X = 25, tile4Y = 0;
+        var tileR = 25;
+        var vX = 5, vY = 5;
+        var score = 0;
+
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * max);
+        }
+        
+        function start() {
+            canvas = document.getElementById('canvas');
+            ctx = canvas.getContext("2d");
+
+            setInterval(gameLoop, 50);
+        }
+        
+        function gameLoop() {
+
+        ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+        
+        ctx.drawImage(tile, tileX + tile1X, tileY + tile1Y, tileR, tileR);
+        ctx.drawImage(tile, tileX + tile2X, tileY + tile2Y, tileR, tileR);
+        ctx.drawImage(tile, tileX + tile3X, tileY + tile3Y, tileR, tileR);
+        ctx.drawImage(tile, tileX + tile4X, tileY + tile4Y, tileR, tileR);
+        
+        tileColor = tile.src;
+        if (tiles.length > 0) {
+            for (let i = 0; i < (tiles.length / 10); i++) {
+                tile.src = tilesColors[i];
+                ctx.drawImage(tile, tiles[i * 10] + tiles[(i * 10) + 2], tiles[(i * 10) + 1] + tiles[(i * 10) + 3], tileR, tileR);
+                ctx.drawImage(tile, tiles[i * 10] + tiles[(i * 10) + 4], tiles[(i * 10) + 1] + tiles[(i * 10) + 5], tileR, tileR);
+                ctx.drawImage(tile, tiles[i * 10] + tiles[(i * 10) + 6], tiles[(i * 10) + 1] + tiles[(i * 10) + 7], tileR, tileR);
+                ctx.drawImage(tile, tiles[i * 10] + tiles[(i * 10) + 8], tiles[(i * 10) + 1] + tiles[(i * 10) + 9], tileR, tileR);
+            }
+        }
+        
+        tile.src = "https://i.ibb.co/drC6SNz/purple-tile.png";
+        for (let i = 0; i < 19; i++) {
+            ctx.drawImage(tile, 170, i * 25, tileR, tileR);
+        }
+        
+        for (let i = 0; i < 19; i++) {
+            ctx.drawImage(tile, 470, i * 25, tileR, tileR);
+        }
+        tile.src = tileColor;
+        
+        document.addEventListener('keydown', function (e) {
+          if (e.key == "ArrowDown") {
+              tileSpeed = 2;
+          } else {
+              tileSpeed = 1;
+          }
+          
+          if (e.key == "ArrowLeft" && (tileX + tile1X) > 195 && (tileX + tile2X) > 195 && (tileX + tile3X) > 195 && (tileX + tile4X) > 195) {
+              tileMove = "left";
+          }
+          
+          if (e.key == "ArrowRight" && (tileX + tile1X) < 445 && (tileX + tile2X) < 445 && (tileX + tile3X) < 445 && (tileX + tile4X) < 445) {
+              tileMove = "right";
+          }
+          
+          if (e.key == "ArrowUp") {
+              tileRotate = "true";
+          }
+        }, false);
+        
+        if ((tileY + tile1Y) != 450 && (tileY + tile2Y) != 450 && (tileY + tile3Y) != 450 && (tileY + tile4Y) != 450 && !(tilesX.includes(tile1X + tileX))) {
+          if (clock > 10)  {
+              clock = 0;
+              if (tileRotate == "true") {
+                  if (tile1X == -25 && tile1Y == -25 && tile2X == 0 && tile2Y == -25 && tile3X == 0 && tile3Y == 0 && tile4X == 25 && tile4Y == 0 && tile1X ) {
+                  tile1X = 25;
+                  tile1Y = -25;
+                  tile2X = 25;
+                  tile2Y = 0;
+                  tile3X = 0;
+                  tile3Y = 0;
+                  tile4X = 0;
+                  tile4Y = 25;
+              } else {
+                  if (tile1X == 25 && tile1Y == -25 && tile2X == 25 && tile2Y == 0 && tile3X == 0 && tile3Y == 0 && tile4X == 0 && tile4Y == 25) {
+                  tile1X = -50;
+                  tile1Y = 0;
+                  tile2X = -25;
+                  tile2Y = 0;
+                  tile3X = 0;
+                  tile3Y = 0;
+                  tile4X = 25;
+                  tile4Y = 0;
+              } else {
+                  if (tile1X == -50 && tile1Y == 0 && tile2X == -25 && tile2Y == 0 && tile3X == 0 && tile3Y == 0 && tile4X == 25 && tile4Y == 0) {
+                  tile1X = 0;
+                  tile1Y = -50;
+                  tile2X = 0;
+                  tile2Y = -25;
+                  tile3X = 0;
+                  tile3Y = 0;
+                  tile4X = 0;
+                  tile4Y = 25;
+              } else {
+                  if (tile1X == 0 && tile1Y == -50 && tile2X == 0 && tile2Y == -25 && tile3X == 0 && tile3Y == 0 && tile4X == 0 && tile4Y == 25) {
+                  tile1X = -50;
+                  tile1Y = 0;
+                  tile2X = -25;
+                  tile2Y = 0;
+                  tile3X = 0;
+                  tile3Y = 0;
+                  tile4X = 25;
+                  tile4Y = 0;
+              }
+              }
+              }
+              }
+              tileRotate = "false";
+              }
+              
+              if (tileMove != "none") {
+                  if (tileMove == "left") {
+                  tileX = tileX - 25;
+                  tileMove = "none";
+              }
+              
+              if (tileMove == "right") {
+                  tileX = tileX + 25;
+                  tileMove = "none";
+              } 
+              } else {
+                  tileY = tileY + 25;
+              }
+          } else {
+              if (tileSpeed == 1) {
+                  clock = clock + 1;
+              } else {
+                  clock = clock + 5;
+              }
+          }
+        } else {
+            tiles.push(tileX);
+            tiles.push(tileY);
+            tiles.push(tile1X);
+            tiles.push(tile1Y);
+            tiles.push(tile2X);
+            tiles.push(tile2Y);
+            tiles.push(tile3X);
+            tiles.push(tile3Y);
+            tiles.push(tile4X);
+            tiles.push(tile4Y);
+            tilesX.push(tile1X);
+            tilesX.push(tile2X);
+            tilesX.push(tile3X);
+            tilesX.push(tile4X);
+            tilesY.push(tile1Y);
+            tilesY.push(tile2Y);
+            tilesY.push(tile3Y);
+            tilesY.push(tile4Y);
+            tilesColors.push(tile.src);
+            tileX = 320;
+            tileY = 50;
+            randomInt = getRandomInt(7);
+            if (randomInt == 0) {
+                tile.src = "https://i.ibb.co/Db7XpDn/red-tile.png";
+                tile1X = -25;
+                tile1Y = -25;
+                tile2X = 0;
+                tile2Y = -25;
+                tile3X = 0;
+                tile3Y = 0;
+                tile4X = 25;
+                tile4Y = 0;
+            }
+            
+            if (randomInt == 1) {
+                tile.src = "https://i.ibb.co/p21Hrkq/blue-tile.png";
+                tile1X = -50;
+                tile1Y = 0;
+                tile2X = -25;
+                tile2Y = 0;
+                tile3X = 0;
+                tile3Y = 0;
+                tile4X = 25;
+                tile4Y = 0;
+            }
+            
+            if (randomInt == 2) {
+                tile.src = "https://i.ibb.co/N9t9Ybr/yellow-tile.png";
+                tile1X = -25;
+                tile1Y = -25;
+                tile2X = 0;
+                tile2Y = -25;
+                tile3X = -25;
+                tile3Y = 0;
+                tile4X = 0;
+                tile4Y = 0;
+            }
+            
+            if (randomInt == 3) {
+                tile.src = "https://i.ibb.co/QMpXDyp/dark-blue-tile.png";
+                tile1X = -25;
+                tile1Y = -25;
+                tile2X = -25;
+                tile2Y = 0;
+                tile3X = 0;
+                tile3Y = 0;
+                tile4X = 25;
+                tile4Y = 0;
+            }
+            
+            if (randomInt == 4) {
+                tile.src = "https://i.ibb.co/jHSw6Cs/orange-tile.png";
+                tile1X = -25;
+                tile1Y = 0;
+                tile2X = 0;
+                tile2Y = 0;
+                tile3X = 25;
+                tile3Y = 0;
+                tile4X = 25;
+                tile4Y = -25;
+            }
+            
+            if (randomInt == 5) {
+                tile.src = "https://i.ibb.co/FK0p5QL/green-tile.png";
+                tile1X = -25;
+                tile1Y = 0;
+                tile2X = 0;
+                tile2Y = 0;
+                tile3X = 0;
+                tile3Y = -25;
+                tile4X = 25;
+                tile4Y = -25;
+            }
+            
+            if (randomInt == 6) {
+                tile.src = "https://i.ibb.co/drC6SNz/purple-tile.png";
+                tile1X = -25;
+                tile1Y = 0;
+                tile2X = 0;
+                tile2Y = 0;
+                tile3X = 0;
+                tile3Y = -25;
+                tile4X = 25;
+                tile4Y = 0;
+            }
+            tileSpeed = 1;
+        }
+        
+        ctx.font = '48px Arial';
+        ctx.fillStyle = 'white';
+        ctx.fillText(score, 50, 50);
+
+    }
+    </script>
+</body>
+</html>
