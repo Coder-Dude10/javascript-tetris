@@ -3,25 +3,42 @@
 <head>
 
 </head>
-<body onload="start();">
+<body onload="start(); sound.play;">
     <canvas width="640" height="480" id="canvas"></canvas>
     <script>
         var clock = 0;
         var tileSpeed = 1;
         var tileMove = "none";
         var tileRotate = "false";
-        var tileColor = "https://i.ibb.co/Db7XpDn/red-tile.png";
         var tiles = [];
         var tilesX = [];
         var tilesY = [];
         var tilesColors = [];
         var randomInt = 0;
+        var sound = new Audio("https://cancasana.com/get/7465774/7LbKK4YbN6cejE4gJWVVtkKAq0aEL6uRxOl1KwNW/mp3");
+        var column1 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        var column2 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        var column3 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        var column4 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        var column5 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        var column6 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        var column7 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        var column8 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        var column9 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        var column10 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        var column11 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         
         var background = new Image();
         background.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Black_colour.jpg/640px-Black_colour.jpg";
         
         var tile = new Image();
         tile.src = "https://i.ibb.co/Db7XpDn/red-tile.png";
+
+        var tile2 = new Image();
+        tile2.src = "https://i.ibb.co/Db7XpDn/red-tile.png";
+
+        var nextTile = new Image();
+        nextTile.src = "";
 
         var brick1X = 150, brick2X = 320, brick3X = 450;
         var brickW = 100, brickH = 50;
@@ -32,12 +49,447 @@
         var tile2X = 0, tile2Y = -25;
         var tile3X = 0, tile3Y = 0;
         var tile4X = 25, tile4Y = 0;
+        var nextTile1X = -25, nextTile1Y = -25;
+        var nextTile2X = 0, nextTile2Y = -25;
+        var nextTile3X = 0, nextTile3Y = 0;
+        var nextTile4X = 25, nextTile4Y = 0;
         var tileR = 25;
         var vX = 5, vY = 5;
         var score = 0;
+        var linesCleared = 0;
 
         function getRandomInt(max) {
             return Math.floor(Math.random() * max);
+        }
+
+        function collisionMatrix(mode) {
+            if (tile.src == "https://i.ibb.co/Db7XpDn/red-tile.png") {
+                if (tileX == 220) {
+                    if (mode == 0) {
+                        return column1[(tileY / 25)] + column2[(tileY / 25)] + column2[(tileY / 25) + 1] + column3[(tileY / 25) + 1];
+                    } else {
+                        column1[(tileY / 25) - 1] = 1;
+                        column2[(tileY / 25) - 1] = 1;
+                        column2[(tileY / 25)] = 1;
+                        column3[(tileY / 25)] = 1;
+                    }
+                }
+
+                if (tileX == 245) {
+                    if (mode == 0) {
+                        return column2[(tileY / 25)] + column3[(tileY / 25)] + column3[(tileY / 25) + 1] + column4[(tileY / 25) + 1];
+                    } else {
+                        column2[(tileY / 25) - 1] = 1;
+                        column3[(tileY / 25) - 1] = 1;
+                        column3[(tileY / 25)] = 1;
+                        column4[(tileY / 25)] = 1;
+                    }
+                }
+
+                if (tileX == 270) {
+                    if (mode == 0) {
+                        return column3[(tileY / 25)] + column4[(tileY / 25)] + column4[(tileY / 25) + 1] + column5[(tileY / 25) + 1];
+                    } else {
+                        column3[(tileY / 25) - 1] = 1;
+                        column4[(tileY / 25) - 1] = 1;
+                        column4[(tileY / 25)] = 1;
+                        column5[(tileY / 25)] = 1;
+                    }
+                }
+
+                if (tileX == 295) {
+                    if (mode == 0) {
+                        return column4[(tileY / 25)] + column5[(tileY / 25)] + column5[(tileY / 25) + 1] + column6[(tileY / 25) + 1];
+                    } else {
+                        column4[(tileY / 25) - 1] = 1;
+                        column5[(tileY / 25) - 1] = 1;
+                        column5[(tileY / 25)] = 1;
+                        column6[(tileY / 25)] = 1;
+                    }
+                }
+
+                if (tileX == 320) {
+                    if (mode == 0) {
+                        return column5[(tileY / 25)] + column6[(tileY / 25)] + column6[(tileY / 25) + 1] + column7[(tileY / 25) + 1];
+                    } else {
+                        column5[(tileY / 25) - 1] = 1;
+                        column6[(tileY / 25) - 1] = 1;
+                        column6[(tileY / 25)] = 1;
+                        column7[(tileY / 25)] = 1;
+                    }
+                }
+
+                if (tileX == 345) {
+                    if (mode == 0) {
+                        return column6[(tileY / 25)] + column7[(tileY / 25)] + column7[(tileY / 25) + 1] + column8[(tileY / 25) + 1];
+                    } else {
+                        column6[(tileY / 25) - 1] = 1;
+                        column7[(tileY / 25) - 1] = 1;
+                        column7[(tileY / 25)] = 1;
+                        column8[(tileY / 25)] = 1;
+                    }
+                }
+
+                if (tileX == 370) {
+                    if (mode == 0) {
+                        return column7[(tileY / 25)] + column8[(tileY / 25)] + column8[(tileY / 25) + 1] + column9[(tileY / 25) + 1];
+                    } else {
+                        column7[(tileY / 25) - 1] = 1;
+                        column8[(tileY / 25) - 1] = 1;
+                        column8[(tileY / 25)] = 1;
+                        column9[(tileY / 25)] = 1;
+                    }
+                }
+
+                if (tileX == 395) {
+                    if (mode == 0) {
+                        return column8[(tileY / 25)] + column9[(tileY / 25)] + column9[(tileY / 25) + 1] + column10[(tileY / 25) + 1];
+                    } else {
+                        column8[(tileY / 25) - 1] = 1;
+                        column9[(tileY / 25) - 1] = 1;
+                        column9[(tileY / 25)] = 1;
+                        column10[(tileY / 25)] = 1;
+                    }
+                }
+
+                if (tileX == 420) {
+                    if (mode == 0) {
+                        return column9[(tileY / 25)] + column10[(tileY / 25)] + column10[(tileY / 25) + 1] + column11[(tileY / 25) + 1];
+                    } else {
+                        column9[(tileY / 25) - 1] = 1;
+                        column10[(tileY / 25) - 1] = 1;
+                        column10[(tileY / 25)] = 1;
+                        column11[(tileY / 25)] = 1;
+                    }
+                }
+            }
+
+            if (tile.src == "https://i.ibb.co/p21Hrkq/blue-tile.png") {
+                if (tileX == 195) {
+                    if (mode == 0) {
+                        return column1[(tileY / 25) + 1] + column1[(tileY / 25)] + column1[(tileY / 25) - 1] + column1[(tileY / 25) - 2];
+                    } else {
+                        column1[(tileY / 25)] = 1;
+                        column1[(tileY / 25) - 1] = 1;
+                        column1[(tileY / 25) - 2] = 1;
+                        column1[(tileY / 25) - 3] = 1;
+                    }
+                }
+
+                if (tileX == 220) {
+                    if (mode == 0) {
+                        return column2[(tileY / 25) + 1] + column2[(tileY / 25)] + column2[(tileY / 25) - 1] + column2[(tileY / 25) - 2];
+                    } else {
+                        column2[(tileY / 25)] = 1;
+                        column2[(tileY / 25) - 1] = 1;
+                        column2[(tileY / 25) - 2] = 1;
+                        column2[(tileY / 25) - 3] = 1;
+                    }
+                }
+
+                if (tileX == 245) {
+                    if (mode == 0) {
+                        if (tile1X == -50) {
+                            return column1[(tileY / 25) + 1] + column2[(tileY / 25) + 1] + column3[(tileY / 25) + 1] + column4[(tileY / 25) + 1];
+                        } else {
+                            return column3[(tileY / 25) + 1] + column3[(tileY / 25)] + column3[(tileY / 25) - 1] + column3[(tileY / 25) - 2];
+                        }
+                    } else {
+                        if (tile1X == -50) {
+                            column1[(tileY / 25)] = 1;
+                            column2[(tileY / 25)] = 1;
+                            column3[(tileY / 25)] = 1;
+                            column4[(tileY / 25)] = 1;
+                        } else {
+                            column3[(tileY / 25)] = 1;
+                            column3[(tileY / 25) - 1] = 1;
+                            column3[(tileY / 25) - 2] = 1;
+                            column3[(tileY / 25) - 3] = 1;
+                        }
+                    }
+                }
+
+                if (tileX == 270) {
+                    if (mode == 0) {
+                        if (tile1X == -50) {
+                            return column2[(tileY / 25) + 1] + column3[(tileY / 25) + 1] + column4[(tileY / 25) + 1] + column5[(tileY / 25) + 1];
+                        } else {
+                            return column4[(tileY / 25) + 1] + column4[(tileY / 25)] + column4[(tileY / 25) - 1] + column4[(tileY / 25) - 2];
+                        }
+                    } else {
+                        if (tile1X == -50) {
+                            column2[(tileY / 25)] = 1;
+                            column3[(tileY / 25)] = 1;
+                            column4[(tileY / 25)] = 1;
+                            column5[(tileY / 25)] = 1;
+                        } else {
+                            column4[(tileY / 25)] = 1;
+                            column4[(tileY / 25) - 1] = 1;
+                            column4[(tileY / 25) - 2] = 1;
+                            column4[(tileY / 25) - 3] = 1;
+                        }
+                    }
+                }
+
+                if (tileX == 295) {
+                    if (mode == 0) {
+                        if (tile1X == -50) {
+                            return column3[(tileY / 25) + 1] + column4[(tileY / 25) + 1] + column5[(tileY / 25) + 1] + column6[(tileY / 25) + 1];
+                        } else {
+                            return column5[(tileY / 25) + 1] + column5[(tileY / 25)] + column5[(tileY / 25) - 1] + column5[(tileY / 25) - 2];
+                        }
+                    } else {
+                        if (tile1X == -50) {
+                            column3[(tileY / 25)] = 1;
+                            column4[(tileY / 25)] = 1;
+                            column5[(tileY / 25)] = 1;
+                            column6[(tileY / 25)] = 1;
+                        } else {
+                            column5[(tileY / 25)] = 1;
+                            column5[(tileY / 25) - 1] = 1;
+                            column5[(tileY / 25) - 2] = 1;
+                            column5[(tileY / 25) - 3] = 1;
+                        }
+                    }
+                }
+
+                if (tileX == 320) {
+                    if (mode == 0) {
+                        if (tile1X == -50) {
+                            return column4[(tileY / 25) + 1] + column5[(tileY / 25) + 1] + column6[(tileY / 25) + 1] + column7[(tileY / 25) + 1];
+                        } else {
+                            return column6[(tileY / 25) + 1] + column6[(tileY / 25)] + column6[(tileY / 25) - 1] + column6[(tileY / 25) - 2];
+                        }
+                    } else {
+                        if (tile1X == -50) {
+                            column4[(tileY / 25)] = 1;
+                            column5[(tileY / 25)] = 1;
+                            column6[(tileY / 25)] = 1;
+                            column7[(tileY / 25)] = 1;
+                        } else {
+                            column6[(tileY / 25)] = 1;
+                            column6[(tileY / 25) - 1] = 1;
+                            column6[(tileY / 25) - 2] = 1;
+                            column6[(tileY / 25) - 3] = 1;
+                        }
+                    }
+                }
+
+                if (tileX == 345) {
+                    if (mode == 0) {
+                        if (tile1X == -50) {
+                            return column5[(tileY / 25) + 1] + column6[(tileY / 25) + 1] + column7[(tileY / 25) + 1] + column8[(tileY / 25) + 1];
+                        } else {
+                            return column7[(tileY / 25) + 1] + column7[(tileY / 25)] + column7[(tileY / 25) - 1] + column7[(tileY / 25) - 2];
+                        }
+                    } else {
+                        if (tile1X == -50) {
+                            column5[(tileY / 25)] = 1;
+                            column6[(tileY / 25)] = 1;
+                            column7[(tileY / 25)] = 1;
+                            column8[(tileY / 25)] = 1;
+                        } else {
+                            column7[(tileY / 25)] = 1;
+                            column7[(tileY / 25) - 1] = 1;
+                            column7[(tileY / 25) - 2] = 1;
+                            column7[(tileY / 25) - 3] = 1;
+                        }
+                    }
+                }
+
+                if (tileX == 370) {
+                    if (mode == 0) {
+                        if (tile1X == -50) {
+                            return column6[(tileY / 25) + 1] + column7[(tileY / 25) + 1] + column8[(tileY / 25) + 1] + column9[(tileY / 25) + 1];
+                        } else {
+                            return column8[(tileY / 25) + 1] + column8[(tileY / 25)] + column8[(tileY / 25) - 1] + column8[(tileY / 25) - 2];
+                        }
+                    } else {
+                        if (tile1X == -50) {
+                            column6[(tileY / 25)] = 1;
+                            column7[(tileY / 25)] = 1;
+                            column8[(tileY / 25)] = 1;
+                            column9[(tileY / 25)] = 1;
+                        } else {
+                            column8[(tileY / 25)] = 1;
+                            column8[(tileY / 25) - 1] = 1;
+                            column8[(tileY / 25) - 2] = 1;
+                            column8[(tileY / 25) - 3] = 1;
+                        }
+                    }
+                }
+
+                if (tileX == 395) {
+                    if (mode == 0) {
+                        if (tile1X == -50) {
+                            return column7[(tileY / 25) + 1] + column8[(tileY / 25) + 1] + column9[(tileY / 25) + 1] + column10[(tileY / 25) + 1];
+                        } else {
+                            return column9[(tileY / 25) + 1] + column9[(tileY / 25)] + column9[(tileY / 25) - 1] + column9[(tileY / 25) - 2];
+                        }
+                    } else {
+                        if (tile1X == -50) {
+                            column7[(tileY / 25)] = 1;
+                            column8[(tileY / 25)] = 1;
+                            column9[(tileY / 25)] = 1;
+                            column10[(tileY / 25)] = 1;
+                        } else {
+                            column9[(tileY / 25)] = 1;
+                            column9[(tileY / 25) - 1] = 1;
+                            column9[(tileY / 25) - 2] = 1;
+                            column9[(tileY / 25) - 3] = 1;
+                        }
+                    }
+                }
+
+                if (tileX == 420) {
+                    if (mode == 0) {
+                        if (tile1X == -50) {
+                            return column8[(tileY / 25) + 1] + column9[(tileY / 25) + 1] + column10[(tileY / 25) + 1] + column11[(tileY / 25) + 1];
+                        } else {
+                            return column11[(tileY / 25) + 1] + column11[(tileY / 25)] + column11[(tileY / 25) - 1] + column11[(tileY / 25) - 2];
+                        }
+                    } else {
+                        if (tile1X == -50) {
+                            column8[(tileY / 25)] = 1;
+                            column9[(tileY / 25)] = 1;
+                            column10[(tileY / 25)] = 1;
+                            column11[(tileY / 25)] = 1;
+                        } else {
+                            column10[(tileY / 25)] = 1;
+                            column10[(tileY / 25) - 1] = 1;
+                            column10[(tileY / 25) - 2] = 1;
+                            column10[(tileY / 25) - 3] = 1;
+                        }
+                    }
+                }
+
+                if (tileX == 445) {
+                    if (mode == 0) {
+                        return column11[(tileY / 25) + 1] + column11[(tileY / 25)] + column11[(tileY / 25) - 1] + column11[(tileY / 25) - 2];
+                    } else {
+                        column11[(tileY / 25)] = 1;
+                        column11[(tileY / 25) - 1] = 1;
+                        column11[(tileY / 25) - 2] = 1;
+                        column11[(tileY / 25) - 3] = 1;
+                    }
+                }
+            }
+
+            if (tile.src == "https://i.ibb.co/N9t9Ybr/yellow-tile.png") {
+                if (tileX == 220) {
+                    if (mode == 0) {
+                        return column1[(tileY / 25) + 1] + column1[(tileY / 25)] + column2[(tileY / 25) + 1] + column2[(tileY / 25)];
+                    } else {
+                        column1[(tileY / 25)] = 1;
+                        column1[(tileY / 25) - 1] = 1;
+                        column2[(tileY / 25)] = 1;
+                        column2[(tileY / 25) - 1] = 1;
+                    }
+                }
+
+                if (tileX == 245) {
+                    if (mode == 0) {
+                        return column2[(tileY / 25) + 1] + column2[(tileY / 25)] + column3[(tileY / 25) + 1] + column3[(tileY / 25)];
+                    } else {
+                        column2[(tileY / 25)] = 1;
+                        column2[(tileY / 25) - 1] = 1;
+                        column3[(tileY / 25)] = 1;
+                        column3[(tileY / 25) - 1] = 1;
+                    }
+                }
+
+                if (tileX == 270) {
+                    if (mode == 0) {
+                        return column3[(tileY / 25) + 1] + column3[(tileY / 25)] + column3[(tileY / 25) + 1] + column3[(tileY / 25)];
+                    } else {
+                        column3[(tileY / 25)] = 1;
+                        column3[(tileY / 25) - 1] = 1;
+                        column4[(tileY / 25)] = 1;
+                        column4[(tileY / 25) - 1] = 1;
+                    }
+                }
+
+                if (tileX == 295) {
+                    if (mode == 0) {
+                        return column4[(tileY / 25) + 1] + column4[(tileY / 25)] + column5[(tileY / 25) + 1] + column5[(tileY / 25)];
+                    } else {
+                        column4[(tileY / 25)] = 1;
+                        column4[(tileY / 25) - 1] = 1;
+                        column5[(tileY / 25)] = 1;
+                        column5[(tileY / 25) - 1] = 1;
+                    }
+                }
+
+                if (tileX == 320) {
+                    if (mode == 0) {
+                        return column5[(tileY / 25) + 1] + column5[(tileY / 25)] + column6[(tileY / 25) + 1] + column6[(tileY / 25)];
+                    } else {
+                        column5[(tileY / 25)] = 1;
+                        column5[(tileY / 25) - 1] = 1;
+                        column6[(tileY / 25)] = 1;
+                        column6[(tileY / 25) - 1] = 1;
+                    }
+                }
+
+                if (tileX == 345) {
+                    if (mode == 0) {
+                        return column6[(tileY / 25) + 1] + column6[(tileY / 25)] + column7[(tileY / 25) + 1] + column7[(tileY / 25)];
+                    } else {
+                        column6[(tileY / 25)] = 1;
+                        column6[(tileY / 25) - 1] = 1;
+                        column7[(tileY / 25)] = 1;
+                        column7[(tileY / 25) - 1] = 1;
+                    }
+                }
+
+                if (tileX == 370) {
+                    if (mode == 0) {
+                        return column7[(tileY / 25) + 1] + column7[(tileY / 25)] + column8[(tileY / 25) + 1] + column8[(tileY / 25)];
+                    } else {
+                        column7[(tileY / 25)] = 1;
+                        column7[(tileY / 25) - 1] = 1;
+                        column8[(tileY / 25)] = 1;
+                        column8[(tileY / 25) - 1] = 1;
+                    }
+                }
+
+                if (tileX == 395) {
+                    if (mode == 0) {
+                        return column8[(tileY / 25) + 1] + column8[(tileY / 25)] + column9[(tileY / 25) + 1] + column9[(tileY / 25)];
+                    } else {
+                        column8[(tileY / 25)] = 1;
+                        column8[(tileY / 25) - 1] = 1;
+                        column9[(tileY / 25)] = 1;
+                        column9[(tileY / 25) - 1] = 1;
+                    }
+                }
+
+                if (tileX == 420) {
+                    if (mode == 0) {
+                        return column9[(tileY / 25) + 1] + column9[(tileY / 25)] + column10[(tileY / 25) + 1] + column10[(tileY / 25)];
+                    } else {
+                        column9[(tileY / 25)] = 1;
+                        column9[(tileY / 25) - 1] = 1;
+                        column10[(tileY / 25)] = 1;
+                        column10[(tileY / 25) - 1] = 1;
+                    }
+                }
+
+                if (tileX == 445) {
+                    if (mode == 0) {
+                        return column10[(tileY / 25) + 1] + column10[(tileY / 25)] + column11[(tileY / 25) + 1] + column11[(tileY / 25)];
+                    } else {
+                        column10[(tileY / 25)] = 1;
+                        column10[(tileY / 25) - 1] = 1;
+                        column11[(tileY / 25)] = 1;
+                        column11[(tileY / 25) - 1] = 1;
+                    }
+                }
+            }
+            
+            if (mode == 0 && tile.src != "https://i.ibb.co/Db7XpDn/red-tile.png" && tile.src != "https://i.ibb.co/p21Hrkq/blue-tile.png" && tile.src != "https://i.ibb.co/N9t9Ybr/yellow-tile.png") {
+                return 0;
+            }
         }
         
         function start() {
@@ -50,145 +502,8 @@
         function gameLoop() {
 
         ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-        
-        ctx.drawImage(tile, tileX + tile1X, tileY + tile1Y, tileR, tileR);
-        ctx.drawImage(tile, tileX + tile2X, tileY + tile2Y, tileR, tileR);
-        ctx.drawImage(tile, tileX + tile3X, tileY + tile3Y, tileR, tileR);
-        ctx.drawImage(tile, tileX + tile4X, tileY + tile4Y, tileR, tileR);
-        
-        tileColor = tile.src;
-        if (tiles.length > 0) {
-            for (let i = 0; i < (tiles.length / 10); i++) {
-                tile.src = tilesColors[i];
-                ctx.drawImage(tile, tiles[i * 10] + tiles[(i * 10) + 2], tiles[(i * 10) + 1] + tiles[(i * 10) + 3], tileR, tileR);
-                ctx.drawImage(tile, tiles[i * 10] + tiles[(i * 10) + 4], tiles[(i * 10) + 1] + tiles[(i * 10) + 5], tileR, tileR);
-                ctx.drawImage(tile, tiles[i * 10] + tiles[(i * 10) + 6], tiles[(i * 10) + 1] + tiles[(i * 10) + 7], tileR, tileR);
-                ctx.drawImage(tile, tiles[i * 10] + tiles[(i * 10) + 8], tiles[(i * 10) + 1] + tiles[(i * 10) + 9], tileR, tileR);
-            }
-        }
-        
-        tile.src = "https://i.ibb.co/drC6SNz/purple-tile.png";
-        for (let i = 0; i < 19; i++) {
-            ctx.drawImage(tile, 170, i * 25, tileR, tileR);
-        }
-        
-        for (let i = 0; i < 19; i++) {
-            ctx.drawImage(tile, 470, i * 25, tileR, tileR);
-        }
-        tile.src = tileColor;
-        
-        document.addEventListener('keydown', function (e) {
-          if (e.key == "ArrowDown") {
-              tileSpeed = 2;
-          } else {
-              tileSpeed = 1;
-          }
-          
-          if (e.key == "ArrowLeft" && (tileX + tile1X) > 195 && (tileX + tile2X) > 195 && (tileX + tile3X) > 195 && (tileX + tile4X) > 195) {
-              tileMove = "left";
-          }
-          
-          if (e.key == "ArrowRight" && (tileX + tile1X) < 445 && (tileX + tile2X) < 445 && (tileX + tile3X) < 445 && (tileX + tile4X) < 445) {
-              tileMove = "right";
-          }
-          
-          if (e.key == "ArrowUp") {
-              tileRotate = "true";
-          }
-        }, false);
-        
-        if ((tileY + tile1Y) != 450 && (tileY + tile2Y) != 450 && (tileY + tile3Y) != 450 && (tileY + tile4Y) != 450 && !(tilesX.includes(tile1X + tileX))) {
-          if (clock > 10)  {
-              clock = 0;
-              if (tileRotate == "true") {
-                  if (tile1X == -25 && tile1Y == -25 && tile2X == 0 && tile2Y == -25 && tile3X == 0 && tile3Y == 0 && tile4X == 25 && tile4Y == 0 && tile1X ) {
-                  tile1X = 25;
-                  tile1Y = -25;
-                  tile2X = 25;
-                  tile2Y = 0;
-                  tile3X = 0;
-                  tile3Y = 0;
-                  tile4X = 0;
-                  tile4Y = 25;
-              } else {
-                  if (tile1X == 25 && tile1Y == -25 && tile2X == 25 && tile2Y == 0 && tile3X == 0 && tile3Y == 0 && tile4X == 0 && tile4Y == 25) {
-                  tile1X = -50;
-                  tile1Y = 0;
-                  tile2X = -25;
-                  tile2Y = 0;
-                  tile3X = 0;
-                  tile3Y = 0;
-                  tile4X = 25;
-                  tile4Y = 0;
-              } else {
-                  if (tile1X == -50 && tile1Y == 0 && tile2X == -25 && tile2Y == 0 && tile3X == 0 && tile3Y == 0 && tile4X == 25 && tile4Y == 0) {
-                  tile1X = 0;
-                  tile1Y = -50;
-                  tile2X = 0;
-                  tile2Y = -25;
-                  tile3X = 0;
-                  tile3Y = 0;
-                  tile4X = 0;
-                  tile4Y = 25;
-              } else {
-                  if (tile1X == 0 && tile1Y == -50 && tile2X == 0 && tile2Y == -25 && tile3X == 0 && tile3Y == 0 && tile4X == 0 && tile4Y == 25) {
-                  tile1X = -50;
-                  tile1Y = 0;
-                  tile2X = -25;
-                  tile2Y = 0;
-                  tile3X = 0;
-                  tile3Y = 0;
-                  tile4X = 25;
-                  tile4Y = 0;
-              }
-              }
-              }
-              }
-              tileRotate = "false";
-              }
-              
-              if (tileMove != "none") {
-                  if (tileMove == "left") {
-                  tileX = tileX - 25;
-                  tileMove = "none";
-              }
-              
-              if (tileMove == "right") {
-                  tileX = tileX + 25;
-                  tileMove = "none";
-              } 
-              } else {
-                  tileY = tileY + 25;
-              }
-          } else {
-              if (tileSpeed == 1) {
-                  clock = clock + 1;
-              } else {
-                  clock = clock + 5;
-              }
-          }
-        } else {
-            tiles.push(tileX);
-            tiles.push(tileY);
-            tiles.push(tile1X);
-            tiles.push(tile1Y);
-            tiles.push(tile2X);
-            tiles.push(tile2Y);
-            tiles.push(tile3X);
-            tiles.push(tile3Y);
-            tiles.push(tile4X);
-            tiles.push(tile4Y);
-            tilesX.push(tile1X);
-            tilesX.push(tile2X);
-            tilesX.push(tile3X);
-            tilesX.push(tile4X);
-            tilesY.push(tile1Y);
-            tilesY.push(tile2Y);
-            tilesY.push(tile3Y);
-            tilesY.push(tile4Y);
-            tilesColors.push(tile.src);
-            tileX = 320;
-            tileY = 50;
+
+        if (tileX == 320 && tileY == 50 && clock == 0) {
             randomInt = getRandomInt(7);
             if (randomInt == 0) {
                 tile.src = "https://i.ibb.co/Db7XpDn/red-tile.png";
@@ -273,6 +588,344 @@
                 tile4X = 25;
                 tile4Y = 0;
             }
+
+            if (nextTile.src == "https://i.ibb.co/Db7XpDn/red-tile.png") {
+                tile.src = "https://i.ibb.co/Db7XpDn/red-tile.png";
+                tile1X = -25;
+                tile1Y = -25;
+                tile2X = 0;
+                tile2Y = -25;
+                tile3X = 0;
+                tile3Y = 0;
+                tile4X = 25;
+                tile4Y = 0;
+            }
+            
+            if (nextTile.src == "https://i.ibb.co/p21Hrkq/blue-tile.png") {
+                tile.src = "https://i.ibb.co/p21Hrkq/blue-tile.png";
+                tile1X = -50;
+                tile1Y = 0;
+                tile2X = -25;
+                tile2Y = 0;
+                tile3X = 0;
+                tile3Y = 0;
+                tile4X = 25;
+                tile4Y = 0;
+            }
+            
+            if (nextTile.src == "https://i.ibb.co/N9t9Ybr/yellow-tile.png") {
+                tile.src = "https://i.ibb.co/N9t9Ybr/yellow-tile.png";
+                tile1X = -25;
+                tile1Y = -25;
+                tile2X = 0;
+                tile2Y = -25;
+                tile3X = -25;
+                tile3Y = 0;
+                tile4X = 0;
+                tile4Y = 0;
+            }
+            
+            if (nextTile.src == "https://i.ibb.co/QMpXDyp/dark-blue-tile.png") {
+                tile.src = "https://i.ibb.co/QMpXDyp/dark-blue-tile.png";
+                tile1X = -25;
+                tile1Y = -25;
+                tile2X = -25;
+                tile2Y = 0;
+                tile3X = 0;
+                tile3Y = 0;
+                tile4X = 25;
+                tile4Y = 0;
+            }
+            
+            if (nextTile.src == "https://i.ibb.co/jHSw6Cs/orange-tile.png") {
+                tile.src = "https://i.ibb.co/jHSw6Cs/orange-tile.png";
+                tile1X = -25;
+                tile1Y = 0;
+                tile2X = 0;
+                tile2Y = 0;
+                tile3X = 25;
+                tile3Y = 0;
+                tile4X = 25;
+                tile4Y = -25;
+            }
+            
+            if (nextTile.src == "https://i.ibb.co/FK0p5QL/green-tile.png") {
+                tile.src = "https://i.ibb.co/FK0p5QL/green-tile.png";
+                tile1X = -25;
+                tile1Y = 0;
+                tile2X = 0;
+                tile2Y = 0;
+                tile3X = 0;
+                tile3Y = -25;
+                tile4X = 25;
+                tile4Y = -25;
+            }
+            
+            if (nextTile.src == "https://i.ibb.co/drC6SNz/purple-tile.png") {
+                tile.src = "https://i.ibb.co/drC6SNz/purple-tile.png";
+                tile1X = -25;
+                tile1Y = 0;
+                tile2X = 0;
+                tile2Y = 0;
+                tile3X = 0;
+                tile3Y = -25;
+                tile4X = 25;
+                tile4Y = 0;
+            }
+
+            randomInt = getRandomInt(7);
+            if (randomInt == 0) {
+                nextTile.src = "https://i.ibb.co/Db7XpDn/red-tile.png";
+                nextTile1X = -25;
+                nextTile1Y = -25;
+                nextTile2X = 0;
+                nextTile2Y = -25;
+                nextTile3X = 0;
+                nextTile3Y = 0;
+                nextTile4X = 25;
+                nextTile4Y = 0;
+            }
+            
+            if (randomInt == 1) {
+                nextTile.src = "https://i.ibb.co/p21Hrkq/blue-tile.png";
+                nextTile1X = -50;
+                nextTile1Y = 0;
+                nextTile2X = -25;
+                nextTile2Y = 0;
+                nextTile3X = 0;
+                nextTile3Y = 0;
+                nextTile4X = 25;
+                nextTile4Y = 0;
+            }
+            
+            if (randomInt == 2) {
+                nextTile.src = "https://i.ibb.co/N9t9Ybr/yellow-tile.png";
+                nextTile1X = -25;
+                nextTile1Y = -25;
+                nextTile2X = 0;
+                nextTile2Y = -25;
+                nextTile3X = -25;
+                nextTile3Y = 0;
+                nextTile4X = 0;
+                nextTile4Y = 0;
+            }
+            
+            if (randomInt == 3) {
+                nextTile.src = "https://i.ibb.co/QMpXDyp/dark-blue-tile.png";
+                nextTile1X = -25;
+                nextTile1Y = -25;
+                nextTile2X = -25;
+                nextTile2Y = 0;
+                nextTile3X = 0;
+                nextTile3Y = 0;
+                nextTile4X = 25;
+                nextTile4Y = 0;
+            }
+            
+            if (randomInt == 4) {
+                nextTile.src = "https://i.ibb.co/jHSw6Cs/orange-tile.png";
+                nextTile1X = -25;
+                nextTile1Y = 0;
+                nextTile2X = 0;
+                nextTile2Y = 0;
+                nextTile3X = 25;
+                nextTile3Y = 0;
+                nextTile4X = 25;
+                nextTile4Y = -25;
+            }
+            
+            if (randomInt == 5) {
+                nextTile.src = "https://i.ibb.co/FK0p5QL/green-tile.png";
+                nextTile1X = -25;
+                nextTile1Y = 0;
+                nextTile2X = 0;
+                nextTile2Y = 0;
+                nextTile3X = 0;
+                nextTile3Y = -25;
+                nextTile4X = 25;
+                nextTile4Y = -25;
+            }
+            
+            if (randomInt == 6) {
+                nextTile.src = "https://i.ibb.co/drC6SNz/purple-tile.png";
+                nextTile1X = -25;
+                nextTile1Y = 0;
+                nextTile2X = 0;
+                nextTile2Y = 0;
+                nextTile3X = 0;
+                nextTile3Y = -25;
+                nextTile4X = 25;
+                nextTile4Y = 0;
+            }
+        }
+        
+        ctx.drawImage(tile, tileX + tile1X, tileY + tile1Y, tileR, tileR);
+        ctx.drawImage(tile, tileX + tile2X, tileY + tile2Y, tileR, tileR);
+        ctx.drawImage(tile, tileX + tile3X, tileY + tile3Y, tileR, tileR);
+        ctx.drawImage(tile, tileX + tile4X, tileY + tile4Y, tileR, tileR);
+
+        ctx.drawImage(nextTile, 545 + nextTile1X, 50 + nextTile1Y, tileR, tileR);
+        ctx.drawImage(nextTile, 545 + nextTile2X, 50 + nextTile2Y, tileR, tileR);
+        ctx.drawImage(nextTile, 545 + nextTile3X, 50 + nextTile3Y, tileR, tileR);
+        ctx.drawImage(nextTile, 545 + nextTile4X, 50 + nextTile4Y, tileR, tileR);
+        
+        if (tiles.length > 0) {
+            for (let i = 0; i < (tiles.length / 10); i++) {
+                tile2.src = tilesColors[i];
+                ctx.drawImage(tile2, tiles[i * 10] + tiles[(i * 10) + 2], tiles[(i * 10) + 1] + tiles[(i * 10) + 3], tileR, tileR);
+                ctx.drawImage(tile2, tiles[i * 10] + tiles[(i * 10) + 4], tiles[(i * 10) + 1] + tiles[(i * 10) + 5], tileR, tileR);
+                ctx.drawImage(tile2, tiles[i * 10] + tiles[(i * 10) + 6], tiles[(i * 10) + 1] + tiles[(i * 10) + 7], tileR, tileR);
+                ctx.drawImage(tile2, tiles[i * 10] + tiles[(i * 10) + 8], tiles[(i * 10) + 1] + tiles[(i * 10) + 9], tileR, tileR);
+            }
+        }
+        
+        tile2.src = "https://i.ibb.co/drC6SNz/purple-tile.png";
+        for (let i = 0; i < 19; i++) {
+            ctx.drawImage(tile2, 170, i * 25, tileR, tileR);
+        }
+        
+        for (let i = 0; i < 19; i++) {
+            ctx.drawImage(tile2, 470, i * 25, tileR, tileR);
+        }
+        
+        document.addEventListener('keydown', function (e) {
+          if (e.key == "ArrowDown") {
+              tileSpeed = 2;
+          } else {
+              tileSpeed = 1;
+          }
+          
+          if (e.key == "ArrowLeft" && (tileX + tile1X) > 195 && (tileX + tile2X) > 195 && (tileX + tile3X) > 195 && (tileX + tile4X) > 195) {
+              tileMove = "left";
+          }
+          
+          if (e.key == "ArrowRight" && (tileX + tile1X) < 445 && (tileX + tile2X) < 445 && (tileX + tile3X) < 445 && (tileX + tile4X) < 445) {
+              tileMove = "right";
+          }
+          
+          if (e.key == "ArrowUp") {
+              tileRotate = "true";
+          }
+        }, false);
+
+        if ((tileY + tile1Y) != 450 && (tileY + tile2Y) != 450 && (tileY + tile3Y) != 450 && (tileY + tile4Y) != 450 && !(tilesX.includes(tile1X + tileX)) && collisionMatrix(0) == 0) {
+          if (clock > 10)  {
+              clock = 0;
+              if (tileRotate == "true") {
+                  if (tile1X == -25 && tile1Y == -25 && tile2X == 0 && tile2Y == -25 && tile3X == 0 && tile3Y == 0 && tile4X == 25 && tile4Y == 0 && tile1X ) {
+                  tile1X = 25;
+                  tile1Y = -25;
+                  tile2X = 25;
+                  tile2Y = 0;
+                  tile3X = 0;
+                  tile3Y = 0;
+                  tile4X = 0;
+                  tile4Y = 25;
+              } else {
+                  if (tile1X == 25 && tile1Y == -25 && tile2X == 25 && tile2Y == 0 && tile3X == 0 && tile3Y == 0 && tile4X == 0 && tile4Y == 25) {
+                  tile1X = -50;
+                  tile1Y = 0;
+                  tile2X = -25;
+                  tile2Y = 0;
+                  tile3X = 0;
+                  tile3Y = 0;
+                  tile4X = 25;
+                  tile4Y = 0;
+              } else {
+                  if (tile1X == -50 && tile1Y == 0 && tile2X == -25 && tile2Y == 0 && tile3X == 0 && tile3Y == 0 && tile4X == 25 && tile4Y == 0) {
+                  tile1X = 0;
+                  tile1Y = -50;
+                  tile2X = 0;
+                  tile2Y = -25;
+                  tile3X = 0;
+                  tile3Y = 0;
+                  tile4X = 0;
+                  tile4Y = 25;
+              } else {
+                  if (tile1X == 0 && tile1Y == -50 && tile2X == 0 && tile2Y == -25 && tile3X == 0 && tile3Y == 0 && tile4X == 0 && tile4Y == 25) {
+                  tile1X = -50;
+                  tile1Y = 0;
+                  tile2X = -25;
+                  tile2Y = 0;
+                  tile3X = 0;
+                  tile3Y = 0;
+                  tile4X = 25;
+                  tile4Y = 0;
+              }
+              }
+              }
+              }
+              tileRotate = "false";
+              }
+              
+              if (tileMove != "none") {
+                  if (tileMove == "left") {
+                  tileX = tileX - 25;
+                  tileMove = "none";
+              }
+              
+              if (tileMove == "right") {
+                  tileX = tileX + 25;
+                  tileMove = "none";
+              } 
+              } else {
+                  tileY = tileY + 25;
+              }
+          } else {
+              if (tileSpeed == 1) {
+                  clock = clock + 1;
+              } else {
+                  clock = clock + 5;
+              }
+          }
+        } else {
+            collisionMatrix(1);
+
+            for (let i = 0; i < 19; i++) {
+                if (column1[i] == 1 && column1[i] == column2[i] && column1[i] == column3[i] && column1[i] == column4[i] && column5[i] == column6[i] && column1[i] == column7[i] && column1[i] == column8[i] && column1[i] == column9[i] && column1[i] == column10[i] && column1[i] == column11[i]) {
+                    linesCleared++;
+                }
+            }
+            
+            if (linesCleared == 1) {
+                score = score + 40;
+            }
+                    
+            if (linesCleared == 2) {
+                score = score + 100;
+            }
+
+            if (linesCleared == 3) {
+                score = score + 300;
+            }
+            
+            if (linesCleared == 4) {
+                score = score + 1200;
+            }
+
+            linesCleared = 0;
+
+            tiles.push(tileX);
+            tiles.push(tileY);
+            tiles.push(tile1X);
+            tiles.push(tile1Y);
+            tiles.push(tile2X);
+            tiles.push(tile2Y);
+            tiles.push(tile3X);
+            tiles.push(tile3Y);
+            tiles.push(tile4X);
+            tiles.push(tile4Y);
+            tilesX.push(tile1X);
+            tilesX.push(tile2X);
+            tilesX.push(tile3X);
+            tilesX.push(tile4X);
+            tilesY.push(tile1Y);
+            tilesY.push(tile2Y);
+            tilesY.push(tile3Y);
+            tilesY.push(tile4Y);
+            tilesColors.push(tile.src);
+            tileX = 320;
+            tileY = 50;
             tileSpeed = 1;
         }
         
